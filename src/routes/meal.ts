@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { knex } from '../database'
 import { checkSessionIdExists } from '../middlewares/check-session-id-exists'
 import { randomUUID } from 'crypto'
+import dayjs from 'dayjs'
 
 export async function mealsRoutes(app: FastifyInstance) {
   app.post(
@@ -165,7 +166,12 @@ export async function mealsRoutes(app: FastifyInstance) {
         user_id: user.id,
       })
 
-      return reply.status(200).send({ data: meals })
+      return reply.status(200).send({
+        data: meals.map((meal) => {
+          meal.date_and_time = dayjs(meal.date_and_time).toDate()
+          return meal
+        }),
+      })
     },
   )
 
@@ -201,7 +207,50 @@ export async function mealsRoutes(app: FastifyInstance) {
         return reply.status(404).send('Meal not found')
       }
 
+      meal.date_and_time = dayjs(meal.date_and_time).toDate()
+
       return reply.status(200).send({ data: meal })
+    },
+  )
+
+  app.get(
+    '/metrics',
+    { preHandler: [checkSessionIdExists] },
+    async (request, reply) => {
+      const { sessionId } = request.cookies
+
+      // finding user
+      const user = await knex('users').where({ session_id: sessionId }).first()
+      if (!user) return reply.status(401).send()
+
+      // Finding meals
+      const meals = await knex('meals').select().where({
+        user_id: user.id,
+      })
+
+      // Finding meals on diet
+      const mealsOnDiet = meals.filter((meal) => {
+        return meal.is_on_diet
+      })
+
+      // Finding today meals on diet
+      const todaysMealsOnDiet = mealsOnDiet.filter((meal) => {
+        const startOfDayDate = dayjs().startOf('day')
+        const endOfDayDate = dayjs().endOf('day')
+        const mealDate = dayjs(meal.date_and_time)
+        return (
+          mealDate.isAfter(startOfDayDate) && mealDate.isBefore(endOfDayDate)
+        )
+      })
+
+      const metrics = {
+        mealsAmount: meals.length,
+        mealsOnDietAmount: mealsOnDiet.length,
+        mealsOffDietAmount: meals.length - mealsOnDiet.length,
+        betterDailyMealsSequence: todaysMealsOnDiet.length,
+      }
+
+      return reply.status(200).send({ data: metrics })
     },
   )
 }
