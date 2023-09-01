@@ -1,3 +1,41 @@
+# Daily Diet
+Esta aplicação é um dos desafios da trilha Ignite da plataforma da Rocketseat. Aqui utilizo o Knex como ORM, SQLite como banco de dados e o Fastify como framework backend.
+
+Este é o [link do Figma](https://www.figma.com/community/file/1218573349379609244/Daily-Diet-%E2%80%A2-Desafio-React-Native) do desing de como seria a aplicação frontend.
+
+## Getting started
+
+### Instalando Dependências
+
+```
+npm i
+```
+
+ou
+
+
+```
+yarn
+```
+
+### Rodando migrations
+
+```
+npx knex migrate:latest
+```
+
+### Iniciando aplicação
+
+```
+npm run dev
+```
+
+ou
+
+```
+yarn dev
+```
+
 ### Regras da aplicação
 
 [x] Deve ser possível criar um usuário
