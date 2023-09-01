@@ -160,12 +160,48 @@ export async function mealsRoutes(app: FastifyInstance) {
       const user = await knex('users').where({ session_id: sessionId }).first()
       if (!user) return reply.status(401).send()
 
-      // Finding meal
+      // Finding meals
       const meals = await knex('meals').select().where({
         user_id: user.id,
       })
 
-      return reply.status(200).send(meals)
+      return reply.status(200).send({ data: meals })
+    },
+  )
+
+  app.get(
+    '/:mealId',
+    { preHandler: [checkSessionIdExists] },
+    async (request, reply) => {
+      const { sessionId } = request.cookies
+
+      // finding user
+      const user = await knex('users').where({ session_id: sessionId }).first()
+      if (!user) return reply.status(401).send()
+
+      // Creating meal params schema
+      const updateMealParamsSchema = z.object({
+        mealId: z.string(),
+      })
+
+      // Capturing params data
+      const { mealId } = updateMealParamsSchema.parse(request.params)
+
+      // Finding meal
+      const meal = await knex('meals')
+        .select()
+        .where({
+          id: mealId,
+          user_id: user.id,
+        })
+        .first()
+
+      // If meal doesn't exists
+      if (!meal) {
+        return reply.status(404).send('Meal not found')
+      }
+
+      return reply.status(200).send({ data: meal })
     },
   )
 }
