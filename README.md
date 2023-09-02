@@ -10,33 +10,45 @@ Este é o [link do Figma](https://www.figma.com/community/file/12185733493796092
 
 ### Instalando Dependências
 
-```
+```bash
 npm i
 ```
 
 ou
 
 
-```
+```bash
 yarn
 ```
 
 ### Rodando migrations
 
-```
+```bash
 npx knex migrate:latest
 ```
 
 ### Iniciando aplicação
 
-```
+```bash
 npm run dev
 ```
 
 ou
 
-```
+```bash
 yarn dev
+```
+
+### Rodando testes
+
+```bash
+yarn test
+```
+
+ou
+
+```bash
+npm run test
 ```
 
 ### Regras da aplicação
