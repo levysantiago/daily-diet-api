@@ -1,3 +1,5 @@
+[![Node.js CI](https://github.com/levysantiago/daily-diet-api/actions/workflows/node.js.yml/badge.svg)](https://github.com/levysantiago/daily-diet-api/actions/workflows/node.js.yml)
+
 # Daily Diet
 Esta aplicação é um dos desafios da trilha Ignite da plataforma da Rocketseat. Aqui utilizo o Knex como ORM, SQLite como banco de dados e o Fastify como framework backend.
 
