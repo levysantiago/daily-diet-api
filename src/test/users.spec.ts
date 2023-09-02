@@ -3,7 +3,7 @@ import { describe, beforeAll, afterAll, beforeEach, it, expect } from 'vitest'
 import { app } from '../app'
 import request from 'supertest'
 
-describe('Transactions routes', () => {
+describe('Users routes', () => {
   beforeAll(async () => {
     await app.ready()
   })

@@ -36,9 +36,9 @@ export async function mealsRoutes(app: FastifyInstance) {
         id: randomUUID(),
         name,
         description,
-        date_and_time: new Date(dateAndTime),
-        is_on_diet: isOnDiet,
-        user_id: user.id,
+        dateAndTime: new Date(dateAndTime),
+        isOnDiet,
+        userId: user.id,
       })
 
       return reply.status(201).send()
@@ -65,10 +65,10 @@ export async function mealsRoutes(app: FastifyInstance) {
 
       // Finding meal
       const meal = await knex('meals')
-        .select('user_id')
+        .select('userId')
         .where({
           id: mealId,
-          user_id: user.id,
+          userId: user.id,
         })
         .first()
 
@@ -99,8 +99,8 @@ export async function mealsRoutes(app: FastifyInstance) {
         .update({
           name,
           description,
-          date_and_time: dateAndTime ? new Date(dateAndTime) : undefined,
-          is_on_diet: isOnDiet,
+          dateAndTime: dateAndTime ? new Date(dateAndTime) : undefined,
+          isOnDiet,
         })
         .where({
           id: mealId,
@@ -130,10 +130,10 @@ export async function mealsRoutes(app: FastifyInstance) {
 
       // Finding meal
       const meal = await knex('meals')
-        .select('user_id')
+        .select('userId')
         .where({
           id: mealId,
-          user_id: user.id,
+          userId: user.id,
         })
         .first()
 
@@ -163,12 +163,12 @@ export async function mealsRoutes(app: FastifyInstance) {
 
       // Finding meals
       const meals = await knex('meals').select().where({
-        user_id: user.id,
+        userId: user.id,
       })
 
       return reply.status(200).send({
         data: meals.map((meal) => {
-          meal.date_and_time = dayjs(meal.date_and_time).toDate()
+          meal.dateAndTime = dayjs(meal.dateAndTime).toDate()
           return meal
         }),
       })
@@ -198,7 +198,7 @@ export async function mealsRoutes(app: FastifyInstance) {
         .select()
         .where({
           id: mealId,
-          user_id: user.id,
+          userId: user.id,
         })
         .first()
 
@@ -207,7 +207,7 @@ export async function mealsRoutes(app: FastifyInstance) {
         return reply.status(404).send('Meal not found')
       }
 
-      meal.date_and_time = dayjs(meal.date_and_time).toDate()
+      meal.dateAndTime = dayjs(meal.dateAndTime).toDate()
 
       return reply.status(200).send({ data: meal })
     },
@@ -225,19 +225,19 @@ export async function mealsRoutes(app: FastifyInstance) {
 
       // Finding meals
       const meals = await knex('meals').select().where({
-        user_id: user.id,
+        userId: user.id,
       })
 
       // Finding meals on diet
       const mealsOnDiet = meals.filter((meal) => {
-        return meal.is_on_diet
+        return meal.isOnDiet
       })
 
       // Finding today meals on diet
       const todaysMealsOnDiet = mealsOnDiet.filter((meal) => {
         const startOfDayDate = dayjs().startOf('day')
         const endOfDayDate = dayjs().endOf('day')
-        const mealDate = dayjs(meal.date_and_time)
+        const mealDate = dayjs(meal.dateAndTime)
         return (
           mealDate.isAfter(startOfDayDate) && mealDate.isBefore(endOfDayDate)
         )
