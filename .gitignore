@@ -10,7 +10,7 @@ db/*.db
 
 # locks
 package-lock.json
-yarn.lock
+# yarn.lock
 
 # build
 dist
